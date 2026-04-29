@@ -135,6 +135,7 @@ services:
     environment:
       NEXT_PUBLIC_PHOENIX_WS_URL: ${NEXT_PUBLIC_PHOENIX_WS_URL:-ws://localhost:4000/socket}
       NEXT_PUBLIC_PHOENIX_API_URL: ${NEXT_PUBLIC_PHOENIX_API_URL:-http://localhost:4000/api}
+      NEXT_PUBLIC_ML_SERVICE_URL: ${NEXT_PUBLIC_ML_SERVICE_URL:-http://localhost:8002}
     depends_on:
       - phoenix_app
     ports:

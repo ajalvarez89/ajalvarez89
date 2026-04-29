@@ -101,8 +101,8 @@ train: ## Train baseline direction classifier (HistGradientBoosting) and promote
 	$(COMPOSE) exec ml_service python -m ml_service.training.train_baseline --promote
 
 .PHONY: backtest
-backtest: ## Run a backtest with the active strategy
-	$(COMPOSE) exec ml_service python -m ml_service.scripts.backtest_run
+backtest: ## Run a backtest with the active strategy across configured pairs
+	$(COMPOSE) exec ml_service python /app/scripts/backtest_run.py
 
 # ============================================================================
 # Tests

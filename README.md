@@ -86,7 +86,7 @@ make backtest        # Corre backtest con la estrategia activa
 
 ## Estado del proyecto
 
-**Fase actual: 5 — Multi-par + ensemble ML + risk endurecido + copy trading opcional**
+**Fase actual: 6 — Backtesting + drawdown semaforizado + escaneo multi-par**
 
 Hoja de ruta: ver [docs/architecture.md](docs/architecture.md).
 
@@ -97,7 +97,8 @@ Hoja de ruta: ver [docs/architecture.md](docs/architecture.md).
 | 2 | Completada | Estrategia MultiSignal + paper + dashboard P&L |
 | 3 | Completada | Pipeline ML básico (1 par) |
 | 4 | Completada | Noticias + sentimiento |
-| 5 | En progreso | Estrategia ML completa + multi-par |
+| 5 | Completada | Estrategia ML completa + multi-par |
+| 6 | En progreso | Backtesting + optimización |
 | 6 | Pendiente | Backtesting + optimización |
 | 7 | Pendiente | (opcional) Live con capital limitado |
 

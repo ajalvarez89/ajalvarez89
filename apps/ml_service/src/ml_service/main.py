@@ -33,3 +33,9 @@ async def health() -> dict:
 
 
 app.include_router(inference_server.router, prefix="/inference")
+
+
+@app.get("/backtests")
+async def list_backtests() -> dict:
+    from ml_service.backtest.listing import list_runs
+    return {"runs": list_runs()}
