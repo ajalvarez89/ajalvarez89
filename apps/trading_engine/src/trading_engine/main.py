@@ -19,6 +19,7 @@ from trading_engine.binance.client import BinanceClient
 from trading_engine.binance.ws_streams import stream_manager_from_settings
 from trading_engine.config import settings
 from trading_engine.engine_loop import StrategyLoop
+from trading_engine.execution.live_broker import LiveBroker
 from trading_engine.execution.order_router import OrderRouter
 from trading_engine.execution.paper_broker import PaperBroker
 from trading_engine.messaging.redis_publisher import RedisStreamPublisher
@@ -82,7 +83,13 @@ async def lifespan(app: FastAPI):
     risk_config = _load_risk_config()
     risk_manager = RiskManager(risk_config, kill_switch=KILL_SWITCH)
     paper_broker = PaperBroker(mode=settings.trading_mode.value)
-    order_router = OrderRouter(risk=risk_manager, paper_broker=paper_broker, mode=settings.trading_mode.value)
+    live_broker = LiveBroker() if settings.is_live else None
+    order_router = OrderRouter(
+        risk=risk_manager,
+        paper_broker=paper_broker,
+        live_broker=live_broker,
+        mode=settings.trading_mode.value,
+    )
 
     base_strategy = MultiSignalStrategy(MultiSignalParams(timeframe=settings.default_timeframe))
     strategy = MLConfirmedStrategy(

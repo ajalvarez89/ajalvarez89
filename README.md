@@ -86,21 +86,20 @@ make backtest        # Corre backtest con la estrategia activa
 
 ## Estado del proyecto
 
-**Fase actual: 6 — Backtesting + drawdown semaforizado + escaneo multi-par**
+**Estado: Fase 7 lista (gated) — todas las fases del plan están implementadas. Live trading queda detrás de los gates manuales documentados en docs/runbook.md.**
 
 Hoja de ruta: ver [docs/architecture.md](docs/architecture.md).
 
 | Fase | Estado | Descripción |
 |---|---|---|
-| 0 | Completada | Scaffold + Docker Compose + Testnet read-only |
-| 1 | Completada | Ingesta de datos + persistencia + UI velas |
-| 2 | Completada | Estrategia MultiSignal + paper + dashboard P&L |
-| 3 | Completada | Pipeline ML básico (1 par) |
-| 4 | Completada | Noticias + sentimiento |
-| 5 | Completada | Estrategia ML completa + multi-par |
-| 6 | En progreso | Backtesting + optimización |
-| 6 | Pendiente | Backtesting + optimización |
-| 7 | Pendiente | (opcional) Live con capital limitado |
+| 0 | ✅ Completada | Scaffold + Docker Compose + Testnet read-only |
+| 1 | ✅ Completada | Ingesta de datos + persistencia + UI velas |
+| 2 | ✅ Completada | Estrategia MultiSignal + paper + dashboard P&L |
+| 3 | ✅ Completada | Pipeline ML básico (1 par) |
+| 4 | ✅ Completada | Noticias + sentimiento |
+| 5 | ✅ Completada | Estrategia ML completa + multi-par |
+| 6 | ✅ Completada | Backtesting + optimización |
+| 7 | ✅ Listo (sin activar) | Live broker — requiere `enable_live.sh` + `make up-live` |
 
 ## Documentación
 
