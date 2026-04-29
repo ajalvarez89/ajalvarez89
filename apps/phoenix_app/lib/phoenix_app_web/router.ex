@@ -28,5 +28,6 @@ defmodule PhoenixAppWeb.Router do
     get "/trading/trades", TradingController, :trades
     get "/trading/pnl", TradingController, :pnl
     get "/trading/strategies", TradingController, :strategies
+    get "/news", NewsController, :recent
   end
 end

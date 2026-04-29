@@ -26,6 +26,11 @@ from trading_engine.risk.kill_switch import KillSwitch
 from trading_engine.risk.manager import RiskConfig, RiskManager
 from trading_engine.strategies.ml_filter import MLConfirmedStrategy, MLFilterParams
 from trading_engine.strategies.multi_signal import MultiSignalParams, MultiSignalStrategy
+from trading_engine.strategies.sentiment_filter import (
+    SentimentBuffer,
+    SentimentFilter,
+    SentimentFilterParams,
+)
 
 
 def _configure_logging() -> None:
@@ -83,11 +88,23 @@ async def lifespan(app: FastAPI):
         base_strategy,
         MLFilterParams(ml_service_url=os.environ.get("ML_SERVICE_URL", "http://ml_service:8002")),
     )
+
+    sentiment_params = SentimentFilterParams(redis_url=settings.redis_url)
+    sentiment_buffer = SentimentBuffer(sentiment_params)
+    sentiment_filter = SentimentFilter(sentiment_buffer, sentiment_params)
+    app.state.sentiment_buffer = sentiment_buffer
+
+    try:
+        await sentiment_buffer.start()
+    except Exception as e:  # noqa: BLE001
+        log.warning("sentiment_buffer_start_failed", error=str(e))
+
     loop = StrategyLoop(
         redis_url=settings.redis_url,
         strategy=strategy,
         order_router=order_router,
         timeframe=settings.default_timeframe,
+        sentiment_filter=sentiment_filter,
     )
     app.state.strategy_loop = loop
     app.state.risk_manager = risk_manager
@@ -104,6 +121,10 @@ async def lifespan(app: FastAPI):
         await loop.stop()
     except Exception as e:  # noqa: BLE001
         log.warning("strategy_loop_stop_failed", error=str(e))
+    try:
+        await sentiment_buffer.stop()
+    except Exception as e:  # noqa: BLE001
+        log.warning("sentiment_buffer_stop_failed", error=str(e))
     try:
         await stream_manager.stop()
     except Exception as e:  # noqa: BLE001

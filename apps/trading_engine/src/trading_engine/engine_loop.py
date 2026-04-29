@@ -19,6 +19,7 @@ from trading_engine.persistence import repos
 from trading_engine.persistence.db import session_scope
 from trading_engine.risk.manager import RiskState
 from trading_engine.strategies.multi_signal import MultiSignalStrategy
+from trading_engine.strategies.sentiment_filter import SentimentFilter
 
 log = structlog.get_logger(__name__)
 
@@ -34,12 +35,14 @@ class StrategyLoop:
         order_router: OrderRouter,
         timeframe: str,
         starting_equity: float = 10_000.0,
+        sentiment_filter: SentimentFilter | None = None,
     ) -> None:
         self._redis = aioredis.from_url(redis_url, decode_responses=True)
         self.strategy = strategy
         self.order_router = order_router
         self.timeframe = timeframe
         self.starting_equity = starting_equity
+        self.sentiment_filter = sentiment_filter
         self._task: asyncio.Task | None = None
         self._stop = asyncio.Event()
         self._buffers: dict[str, Deque[dict]] = defaultdict(lambda: deque(maxlen=self.BUFFER_LEN))
@@ -107,6 +110,12 @@ class StrategyLoop:
         signal = self.strategy.evaluate(symbol, list(buf))
         if signal is None:
             return
+
+        if self.sentiment_filter is not None:
+            blocked, reason = self.sentiment_filter.should_block(symbol, signal.side)
+            if blocked:
+                log.info("signal_blocked_by_sentiment", symbol=symbol, side=signal.side, reason=reason)
+                return
 
         log.info("signal_emitted", symbol=symbol, side=signal.side, strategy=signal.strategy)
 

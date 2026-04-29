@@ -4,6 +4,7 @@ defmodule PhoenixAppWeb.UserSocket do
   channel "market:*", PhoenixAppWeb.MarketChannel
   channel "trading:*", PhoenixAppWeb.TradingChannel
   channel "signals:*", PhoenixAppWeb.SignalsChannel
+  channel "news:*", PhoenixAppWeb.NewsChannel
 
   @impl true
   def connect(_params, socket, _connect_info) do
