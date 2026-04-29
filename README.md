@@ -86,15 +86,15 @@ make backtest        # Corre backtest con la estrategia activa
 
 ## Estado del proyecto
 
-**Fase actual: 1 — Ingesta de datos + UI velas**
+**Fase actual: 2 — Estrategia MultiSignal + paper trading + dashboard P&L**
 
 Hoja de ruta: ver [docs/architecture.md](docs/architecture.md).
 
 | Fase | Estado | Descripción |
 |---|---|---|
 | 0 | Completada | Scaffold + Docker Compose + Testnet read-only |
-| 1 | En progreso | Ingesta de datos + persistencia + UI velas |
-| 2 | Pendiente | Estrategia MultiSignal + paper + dashboard P&L |
+| 1 | Completada | Ingesta de datos + persistencia + UI velas |
+| 2 | En progreso | Estrategia MultiSignal + paper + dashboard P&L |
 | 3 | Pendiente | Pipeline ML básico (1 par) |
 | 4 | Pendiente | Noticias + sentimiento |
 | 5 | Pendiente | Estrategia ML completa + multi-par |

@@ -21,5 +21,12 @@ defmodule PhoenixAppWeb.Router do
     post "/admin/approve", AdminController, :approve
     post "/admin/kill", AdminController, :kill
     post "/admin/resume", AdminController, :resume
+    get "/admin/status", AdminController, :status
+
+    get "/trading/orders", TradingController, :orders
+    get "/trading/positions", TradingController, :positions
+    get "/trading/trades", TradingController, :trades
+    get "/trading/pnl", TradingController, :pnl
+    get "/trading/strategies", TradingController, :strategies
   end
 end
