@@ -11,6 +11,7 @@ defmodule PhoenixApp.Application do
       {Phoenix.PubSub, name: PhoenixApp.PubSub},
       {Redix, {Application.get_env(:phoenix_app, :redis_url, "redis://localhost:6379/0"), [name: :redix]}},
       PhoenixApp.Market.TickCache,
+      PhoenixApp.Bridges.RedisConsumer,
       PhoenixAppWeb.Endpoint
     ]
 

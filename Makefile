@@ -93,8 +93,8 @@ status: ## Show health status of all services
 # Data / ML
 # ============================================================================
 .PHONY: seed
-seed: ## Seed historical klines into DuckDB
-	$(COMPOSE) exec ml_service python -m ml_service.scripts.seed_historical
+seed: ## Seed historical klines into DuckDB (runs inside ml_service container)
+	$(COMPOSE) exec ml_service python /app/scripts/seed_historical.py
 
 .PHONY: train
 train: ## Train baseline N-HiTS model

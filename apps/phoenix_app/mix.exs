@@ -38,6 +38,7 @@ defmodule PhoenixApp.MixProject do
       {:plug_cowboy, "~> 2.7"},
       {:redix, "~> 1.5"},
       {:cors_plug, "~> 3.0"},
+      {:req, "~> 0.5"},
       {:bandit, "~> 1.5"}
     ]
   end

@@ -17,6 +17,7 @@ defmodule PhoenixAppWeb.Router do
 
     get "/health", HealthController, :show
     get "/services/status", HealthController, :services_status
+    get "/market/klines", MarketController, :klines
     post "/admin/approve", AdminController, :approve
     post "/admin/kill", AdminController, :kill
     post "/admin/resume", AdminController, :resume
