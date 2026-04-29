@@ -1,0 +1,150 @@
+services:
+  redis:
+    image: redis:7-alpine
+    container_name: ctb-redis
+    restart: unless-stopped
+    command: ["redis-server", "/usr/local/etc/redis/redis.conf"]
+    volumes:
+      - ./infra/redis/redis.conf:/usr/local/etc/redis/redis.conf:ro
+      - redis_data:/data
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  phoenix_app:
+    build:
+      context: ./apps/phoenix_app
+      dockerfile: Dockerfile
+    container_name: ctb-phoenix
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      MIX_ENV: dev
+      PHX_HOST: ${PHX_HOST:-localhost}
+      PHX_PORT: ${PHX_PORT:-4000}
+      DATABASE_URL: sqlite:///app/data/sqlite/trading.db
+      REDIS_URL: ${REDIS_URL:-redis://redis:6379/0}
+    depends_on:
+      redis:
+        condition: service_healthy
+    ports:
+      - "${PHX_PORT:-4000}:4000"
+    volumes:
+      - ./apps/phoenix_app:/app
+      - phoenix_deps:/app/deps
+      - phoenix_build:/app/_build
+      - ./data:/app/data
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:4000/health"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 30s
+
+  trading_engine:
+    build:
+      context: ./apps/trading_engine
+      dockerfile: Dockerfile
+    container_name: ctb-trading-engine
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      TRADING_ENGINE_PORT: ${TRADING_ENGINE_PORT:-8001}
+      REDIS_URL: ${REDIS_URL:-redis://redis:6379/0}
+      DATABASE_URL: sqlite:////data/sqlite/trading.db
+    depends_on:
+      redis:
+        condition: service_healthy
+    ports:
+      - "${TRADING_ENGINE_PORT:-8001}:8001"
+    volumes:
+      - ./apps/trading_engine:/app
+      - ./data:/data
+      - ./config:/config:ro
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost:8001/health"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 30s
+
+  ml_service:
+    build:
+      context: ./apps/ml_service
+      dockerfile: Dockerfile
+    container_name: ctb-ml-service
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      ML_SERVICE_PORT: ${ML_SERVICE_PORT:-8002}
+      REDIS_URL: ${REDIS_URL:-redis://redis:6379/0}
+      DUCKDB_PATH: /data/duckdb/warehouse.duckdb
+    depends_on:
+      redis:
+        condition: service_healthy
+    ports:
+      - "${ML_SERVICE_PORT:-8002}:8002"
+    volumes:
+      - ./apps/ml_service:/app
+      - ./data:/data
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost:8002/health"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 60s
+
+  news_collector:
+    build:
+      context: ./apps/news_collector
+      dockerfile: Dockerfile
+    container_name: ctb-news-collector
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      NEWS_COLLECTOR_PORT: ${NEWS_COLLECTOR_PORT:-8003}
+      REDIS_URL: ${REDIS_URL:-redis://redis:6379/0}
+    depends_on:
+      redis:
+        condition: service_healthy
+    ports:
+      - "${NEWS_COLLECTOR_PORT:-8003}:8003"
+    volumes:
+      - ./apps/news_collector:/app
+      - ./data:/data
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost:8003/health"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 30s
+
+  web:
+    build:
+      context: ./apps/web
+      dockerfile: Dockerfile
+    container_name: ctb-web
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      NEXT_PUBLIC_PHOENIX_WS_URL: ${NEXT_PUBLIC_PHOENIX_WS_URL:-ws://localhost:4000/socket}
+      NEXT_PUBLIC_PHOENIX_API_URL: ${NEXT_PUBLIC_PHOENIX_API_URL:-http://localhost:4000/api}
+    depends_on:
+      - phoenix_app
+    ports:
+      - "${WEB_PORT:-3000}:3000"
+    volumes:
+      - ./apps/web:/app
+      - web_node_modules:/app/node_modules
+      - web_next:/app/.next
+
+volumes:
+  redis_data:
+  phoenix_deps:
+  phoenix_build:
+  web_node_modules:
+  web_next:

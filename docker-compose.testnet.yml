@@ -1,0 +1,9 @@
+services:
+  trading_engine:
+    environment:
+      TRADING_MODE: testnet
+      BINANCE_TESTNET: "1"
+
+  ml_service:
+    environment:
+      TRADING_MODE: testnet

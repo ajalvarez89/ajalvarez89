@@ -1,0 +1,91 @@
+# Secrets
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+
+# Data (local databases, models, parquet files)
+data/
+!data/.gitkeep
+*.sqlite
+*.sqlite3
+*.duckdb
+*.duckdb.wal
+*.parquet
+
+# Models / ML artifacts
+apps/ml_service/models/
+*.pt
+*.pth
+*.ckpt
+*.onnx
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+.venv/
+env/
+.eggs/
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+*.log
+
+# Jupyter
+.ipynb_checkpoints/
+*-checkpoint.ipynb
+
+# Node
+node_modules/
+.next/
+.turbo/
+dist/
+build/
+*.tsbuildinfo
+.pnpm-store/
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+
+# Elixir
+_build/
+deps/
+*.beam
+*.ez
+.elixir_ls/
+.fetch
+erl_crash.dump
+mix.lock.bak
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+!.vscode/extensions.json
+*.swp
+*~
+
+# Docker
+.docker/
+
+# Logs
+logs/
+*.log
+
+# Backtest outputs
+data/backtests/
+
+# Misc
+.cache/
+tmp/

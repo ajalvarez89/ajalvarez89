@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://crypto-trading-bot/contracts/market_tick.schema.json",
+  "title": "MarketTick",
+  "description": "A market tick (snapshot of price/volume for a symbol at a point in time).",
+  "type": "object",
+  "required": ["symbol", "timestamp_ms", "price"],
+  "properties": {
+    "symbol": { "type": "string", "examples": ["BTCUSDT"] },
+    "timestamp_ms": { "type": "integer", "minimum": 0 },
+    "price": { "type": "number", "exclusiveMinimum": 0 },
+    "volume": { "type": "number", "minimum": 0 },
+    "bid": { "type": "number", "exclusiveMinimum": 0 },
+    "ask": { "type": "number", "exclusiveMinimum": 0 },
+    "source": { "type": "string", "enum": ["binance", "binance_testnet"] }
+  },
+  "additionalProperties": false
+}

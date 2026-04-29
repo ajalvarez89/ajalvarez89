@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://crypto-trading-bot/contracts/order.schema.json",
+  "title": "Order",
+  "description": "An order submitted to the broker (paper or live).",
+  "type": "object",
+  "required": ["symbol", "side", "type", "quantity", "mode", "created_at_ms"],
+  "properties": {
+    "external_id": { "type": ["string", "null"] },
+    "symbol": { "type": "string" },
+    "side": { "type": "string", "enum": ["buy", "sell"] },
+    "type": { "type": "string", "enum": ["market", "limit", "stop_loss", "take_profit", "oco"] },
+    "status": {
+      "type": "string",
+      "enum": ["new", "submitted", "partial", "filled", "canceled", "rejected", "expired"]
+    },
+    "quantity": { "type": "number", "exclusiveMinimum": 0 },
+    "price": { "type": ["number", "null"] },
+    "stop_loss": { "type": ["number", "null"] },
+    "take_profit": { "type": ["number", "null"] },
+    "strategy": { "type": ["string", "null"] },
+    "mode": { "type": "string", "enum": ["testnet", "paper", "live"] },
+    "created_at_ms": { "type": "integer" }
+  },
+  "additionalProperties": false
+}

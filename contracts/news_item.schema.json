@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://crypto-trading-bot/contracts/news_item.schema.json",
+  "title": "NewsItem",
+  "description": "Normalized news item from CryptoPanic, NewsAPI, etc.",
+  "type": "object",
+  "required": ["id", "source", "title", "published_at_ms"],
+  "properties": {
+    "id": { "type": "string", "description": "Stable hash of source + url" },
+    "source": { "type": "string", "examples": ["cryptopanic", "newsapi", "twitter"] },
+    "title": { "type": "string" },
+    "url": { "type": ["string", "null"], "format": "uri" },
+    "summary": { "type": ["string", "null"] },
+    "symbols": { "type": "array", "items": { "type": "string" } },
+    "published_at_ms": { "type": "integer" },
+    "sentiment": {
+      "type": ["object", "null"],
+      "properties": {
+        "label": { "type": "string", "enum": ["positive", "neutral", "negative"] },
+        "score": { "type": "number", "minimum": -1, "maximum": 1 },
+        "model": { "type": "string" }
+      }
+    }
+  },
+  "additionalProperties": false
+}

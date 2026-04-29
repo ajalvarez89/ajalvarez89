@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://crypto-trading-bot/contracts/position.schema.json",
+  "title": "Position",
+  "type": "object",
+  "required": ["symbol", "side", "quantity", "avg_entry_price", "mode", "opened_at_ms"],
+  "properties": {
+    "id": { "type": ["integer", "string"] },
+    "symbol": { "type": "string" },
+    "side": { "type": "string", "enum": ["long", "short"] },
+    "quantity": { "type": "number", "exclusiveMinimum": 0 },
+    "avg_entry_price": { "type": "number", "exclusiveMinimum": 0 },
+    "unrealized_pnl": { "type": "number" },
+    "realized_pnl": { "type": "number" },
+    "strategy": { "type": ["string", "null"] },
+    "mode": { "type": "string", "enum": ["testnet", "paper", "live"] },
+    "opened_at_ms": { "type": "integer" },
+    "closed_at_ms": { "type": ["integer", "null"] }
+  },
+  "additionalProperties": false
+}

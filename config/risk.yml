@@ -1,0 +1,33 @@
+# Risk manager configuration.
+# Loaded by trading_engine.risk.manager.RiskConfig.from_yaml.
+# Conservative defaults — adjust only after backtest validation.
+
+# % of equity risked per trade (lot size derived from this and ATR-stop distance).
+risk_per_trade_pct: 0.01            # 1%
+
+# Absolute cap on a single position relative to equity.
+max_position_pct_equity: 0.05       # 5%
+
+# Max concurrent open positions across all symbols.
+max_open_positions: 3
+
+# Stop-loss distance = stop_atr_multiplier · ATR(14)
+stop_atr_multiplier: 1.5
+
+# Take-profit distance = tp_atr_multiplier · ATR(14)  (RR 1:2 default)
+tp_atr_multiplier: 3.0
+
+# Fallback when ATR unavailable (early candles, missing data).
+mandatory_stop_loss_pct: 0.02       # 2%
+
+# Daily drawdown that triggers automatic kill switch.
+daily_max_drawdown_pct: 0.03        # 3%
+
+# Streak that triggers a 1-hour cooldown (no new entries).
+max_consecutive_losses: 4
+
+# Internal rate limit (additional to Binance's).
+max_orders_per_minute: 5
+
+# Max acceptable slippage bps on execution. Reject if exceeded.
+max_slippage_bps: 50

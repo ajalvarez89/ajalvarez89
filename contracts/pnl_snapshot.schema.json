@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://crypto-trading-bot/contracts/pnl_snapshot.schema.json",
+  "title": "PnLSnapshot",
+  "description": "Aggregated P&L for a window (daily / weekly / monthly).",
+  "type": "object",
+  "required": ["window", "starts_at_ms", "ends_at_ms", "realized_pnl", "unrealized_pnl"],
+  "properties": {
+    "window": { "type": "string", "enum": ["day", "week", "month", "year", "all_time"] },
+    "starts_at_ms": { "type": "integer" },
+    "ends_at_ms": { "type": "integer" },
+    "realized_pnl": { "type": "number" },
+    "unrealized_pnl": { "type": "number" },
+    "fees": { "type": "number", "minimum": 0 },
+    "trades": { "type": "integer", "minimum": 0 },
+    "winners": { "type": "integer", "minimum": 0 },
+    "losers": { "type": "integer", "minimum": 0 },
+    "win_rate": { "type": "number", "minimum": 0, "maximum": 1 },
+    "max_drawdown_pct": { "type": "number", "minimum": 0 }
+  },
+  "additionalProperties": false
+}

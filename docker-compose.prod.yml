@@ -1,0 +1,18 @@
+# LIVE MODE override — REAL MONEY.
+# Only use after running scripts/enable_live.sh which performs interactive checks.
+services:
+  trading_engine:
+    environment:
+      TRADING_MODE: live
+      BINANCE_TESTNET: "0"
+    restart: always
+
+  ml_service:
+    environment:
+      TRADING_MODE: live
+    restart: always
+
+  phoenix_app:
+    environment:
+      MIX_ENV: prod
+    restart: always

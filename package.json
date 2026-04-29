@@ -1,0 +1,22 @@
+{
+  "name": "crypto-trading-bot",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Cryptocurrency trading bot for Binance with ML/AI, runs locally",
+  "license": "MIT",
+  "scripts": {
+    "build": "turbo run build",
+    "dev": "turbo run dev",
+    "lint": "turbo run lint",
+    "test": "turbo run test",
+    "type-check": "turbo run type-check"
+  },
+  "devDependencies": {
+    "turbo": "^2.0.0",
+    "typescript": "^5.4.5"
+  },
+  "packageManager": "pnpm@9.1.0",
+  "engines": {
+    "node": ">=20"
+  }
+}
