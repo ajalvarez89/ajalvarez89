@@ -24,6 +24,7 @@ from trading_engine.execution.paper_broker import PaperBroker
 from trading_engine.messaging.redis_publisher import RedisStreamPublisher
 from trading_engine.risk.kill_switch import KillSwitch
 from trading_engine.risk.manager import RiskConfig, RiskManager
+from trading_engine.strategies.copy_trading import CopyTradingParams, CopyTradingPoller
 from trading_engine.strategies.ml_filter import MLConfirmedStrategy, MLFilterParams
 from trading_engine.strategies.multi_signal import MultiSignalParams, MultiSignalStrategy
 from trading_engine.strategies.sentiment_filter import (
@@ -114,9 +115,30 @@ async def lifespan(app: FastAPI):
     except Exception as e:  # noqa: BLE001
         log.warning("strategy_loop_start_failed", error=str(e))
 
+    copy_params = CopyTradingParams(
+        enabled=os.environ.get("ENABLE_COPY_TRADING", "0") == "1",
+        trader_uids=[u.strip() for u in os.environ.get("COPY_TRADER_UIDS", "").split(",") if u.strip()],
+        poll_interval_sec=int(os.environ.get("COPY_POLL_INTERVAL_SEC", "60")),
+    )
+
+    async def _copy_signal(signal, last_price):
+        state = await loop._build_state()  # type: ignore[attr-defined]
+        await order_router.handle(signal, state=state, last_price=last_price)
+
+    copy_poller = CopyTradingPoller(copy_params, on_signal=_copy_signal)
+    app.state.copy_poller = copy_poller
+    try:
+        await copy_poller.start()
+    except Exception as e:  # noqa: BLE001
+        log.warning("copy_poller_start_failed", error=str(e))
+
     yield
 
     log.info("trading_engine.shutdown")
+    try:
+        await copy_poller.stop()
+    except Exception as e:  # noqa: BLE001
+        log.warning("copy_poller_stop_failed", error=str(e))
     try:
         await loop.stop()
     except Exception as e:  # noqa: BLE001

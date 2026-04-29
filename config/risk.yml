@@ -11,6 +11,9 @@ max_position_pct_equity: 0.05       # 5%
 # Max concurrent open positions across all symbols.
 max_open_positions: 3
 
+# Max concurrent positions per single symbol (prevents stacking on one pair).
+max_open_positions_per_symbol: 1
+
 # Stop-loss distance = stop_atr_multiplier · ATR(14)
 stop_atr_multiplier: 1.5
 

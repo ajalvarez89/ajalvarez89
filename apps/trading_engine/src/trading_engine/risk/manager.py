@@ -22,6 +22,7 @@ class RiskConfig:
     risk_per_trade_pct: float = 0.01
     max_position_pct_equity: float = 0.05
     max_open_positions: int = 3
+    max_open_positions_per_symbol: int = 1
     stop_atr_multiplier: float = 1.5
     tp_atr_multiplier: float = 3.0
     mandatory_stop_loss_pct: float = 0.02
@@ -42,6 +43,7 @@ class RiskConfig:
 class RiskState:
     equity: float
     open_positions: int = 0
+    open_positions_by_symbol: dict[str, int] | None = None
     consecutive_losses: int = 0
     daily_pnl: float = 0.0
     daily_starting_equity: float = 0.0
@@ -77,6 +79,11 @@ class RiskManager:
 
         if state.open_positions >= c.max_open_positions:
             return CheckResult(False, reason="max_open_positions_reached")
+
+        if state.open_positions_by_symbol is not None:
+            existing = state.open_positions_by_symbol.get(signal.symbol, 0)
+            if existing >= c.max_open_positions_per_symbol:
+                return CheckResult(False, reason="max_per_symbol_reached")
 
         if state.daily_starting_equity > 0:
             dd = (state.daily_starting_equity - state.equity) / state.daily_starting_equity

@@ -124,16 +124,17 @@ class StrategyLoop:
 
     async def _build_state(self) -> RiskState:
         async with session_scope() as s:
-            open_positions = len(await repos.list_open_positions(s))
-        # Phase 2 simplification: equity tracked from a fixed starting balance + sum(realized_pnl).
-        # Phase 5 will wire live equity from the broker.
-        equity = self.starting_equity
-        async with session_scope() as s:
+            open_positions = await repos.list_open_positions(s)
             trades = await repos.list_recent_trades(s, limit=10_000)
+        equity = self.starting_equity
         realized = sum((t.realized_pnl or 0.0) for t in trades)
+        per_symbol: dict[str, int] = {}
+        for p in open_positions:
+            per_symbol[p.symbol] = per_symbol.get(p.symbol, 0) + 1
         return RiskState(
             equity=equity + realized,
-            open_positions=open_positions,
+            open_positions=len(open_positions),
+            open_positions_by_symbol=per_symbol,
             consecutive_losses=_consecutive_losses(trades),
             daily_pnl=realized,
             daily_starting_equity=equity,
