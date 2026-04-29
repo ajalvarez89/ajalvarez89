@@ -97,8 +97,8 @@ seed: ## Seed historical klines into DuckDB (runs inside ml_service container)
 	$(COMPOSE) exec ml_service python /app/scripts/seed_historical.py
 
 .PHONY: train
-train: ## Train baseline N-HiTS model
-	$(COMPOSE) exec ml_service python -m ml_service.training.train_nhits
+train: ## Train baseline direction classifier (HistGradientBoosting) and promote
+	$(COMPOSE) exec ml_service python -m ml_service.training.train_baseline --promote
 
 .PHONY: backtest
 backtest: ## Run a backtest with the active strategy

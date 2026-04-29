@@ -24,6 +24,7 @@ from trading_engine.execution.paper_broker import PaperBroker
 from trading_engine.messaging.redis_publisher import RedisStreamPublisher
 from trading_engine.risk.kill_switch import KillSwitch
 from trading_engine.risk.manager import RiskConfig, RiskManager
+from trading_engine.strategies.ml_filter import MLConfirmedStrategy, MLFilterParams
 from trading_engine.strategies.multi_signal import MultiSignalParams, MultiSignalStrategy
 
 
@@ -77,7 +78,11 @@ async def lifespan(app: FastAPI):
     paper_broker = PaperBroker(mode=settings.trading_mode.value)
     order_router = OrderRouter(risk=risk_manager, paper_broker=paper_broker, mode=settings.trading_mode.value)
 
-    strategy = MultiSignalStrategy(MultiSignalParams(timeframe=settings.default_timeframe))
+    base_strategy = MultiSignalStrategy(MultiSignalParams(timeframe=settings.default_timeframe))
+    strategy = MLConfirmedStrategy(
+        base_strategy,
+        MLFilterParams(ml_service_url=os.environ.get("ML_SERVICE_URL", "http://ml_service:8002")),
+    )
     loop = StrategyLoop(
         redis_url=settings.redis_url,
         strategy=strategy,
